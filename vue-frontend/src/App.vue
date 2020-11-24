@@ -1,28 +1,29 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+   <v-data-table
+    :headers="headers"
+    :items="results"
+    :items-per-page="50"
+    class="elevation-1"
+  ></v-data-table>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { resultsService } from './services/results.service';
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data: () => ({
+    results: [],
+    headers: [{text:"Id", value:"id"}, {text:"Plant", value:"Plant"}, {text:"Plant name", value:"PlantName"}, {text:"Storage location", value:"StorageLocation"},
+     {text:"Storage location name", value:"StorageLocationName"}, {text:"Material group id", value:"MaterialGroupId"},{text:"Material group name", value:"MaterialGroupName"},
+     {text:"Material id", value:"MaterialId"}, {text:"Material name", value:"MaterialName"}, {text:"Quantity", value:"Quantity"}, {text:"Unit of measure", value:"UnitOfMeasure"}],
+  }),
+  created(){
+    resultsService.refreshResults().then((data) => {
+      console.log(data);
+      this.results = data.body.d.results;
+    });
   }
-}
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
