@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -23,43 +23,43 @@ import javax.persistence.Id;
 })
 @Entity
 public class Result {
-
-    @Id
-    @GeneratedValue
-    private Long Id;
-    @JsonProperty("Plant")
-    private String plant;
+    @EmbeddedId
+    private ResultPrimaryKey pk;
     @JsonProperty("PlantName")
     private String plantName;
-    @JsonProperty("StorageLocation")
-    private String storageLocation;
     @JsonProperty("StorageLocationName")
     private String storageLocationName;
     @JsonProperty("MaterialGroupId")
     private String materialGroupId;
     @JsonProperty("MaterialGroupName")
     private String materialGroupName;
-    @JsonProperty("MaterialId")
-    private String materialId;
     @JsonProperty("MaterialName")
     private String materialName;
     @JsonProperty("Quantity")
     private String quantity;
     @JsonProperty("UnitOfMeasure")
     private String unitOfMeasure;
+    @JsonProperty("Plant")
+    @Transient
+    private String plant;
+    @JsonProperty("StorageLocation")
+    @Transient
+    private String storageLocation;
+    @JsonProperty("MaterialId")
+    @Transient
+    private String materialId;
 
-    public Long getId() {
-        return Id;
+    public ResultPrimaryKey getPk() {
+        return pk;
+    }
+
+    public void setPk(ResultPrimaryKey pk) {
+        this.pk = pk;
     }
 
     @JsonProperty("Plant")
     public String getPlant() {
         return plant;
-    }
-
-    @JsonProperty("Plant")
-    public void setPlant(String plant) {
-        this.plant = plant;
     }
 
     @JsonProperty("PlantName")
@@ -75,11 +75,6 @@ public class Result {
     @JsonProperty("StorageLocation")
     public String getStorageLocation() {
         return storageLocation;
-    }
-
-    @JsonProperty("StorageLocation")
-    public void setStorageLocation(String storageLocation) {
-        this.storageLocation = storageLocation;
     }
 
     @JsonProperty("StorageLocationName")
@@ -115,11 +110,6 @@ public class Result {
     @JsonProperty("MaterialId")
     public String getMaterialId() {
         return materialId;
-    }
-
-    @JsonProperty("MaterialId")
-    public void setMaterialId(String materialId) {
-        this.materialId = materialId;
     }
 
     @JsonProperty("MaterialName")
