@@ -65,17 +65,22 @@
         </template>
       </v-data-table>
     </v-card>
-     <!--google-map /-->
+    <v-dialog
+      v-model="dialog"
+      width="500"
+    >
+      <google-map/>
+    </v-dialog>
   </v-app>
 </template>
 
 <script>
 import { resultsService } from './services/results.service';
-// import GoogleMap from "./components/GoogleMap";
+import GoogleMap from "./components/GoogleMap";
 
 export default {
   components: {
-    // GoogleMap
+     GoogleMap
   },
   data: () => ({
     results: [],
@@ -83,6 +88,7 @@ export default {
      {text:"Storage location name", value:"StorageLocationName"}, {text:"Material group id", value:"MaterialGroupId"},{text:"Material group name", value:"MaterialGroupName"},
      {text:"Material id", value:"MaterialId"}, {text:"Material name", value:"MaterialName"}, {text:"Quantity", value:"Quantity"}, {text:"Unit of measure", value:"UnitOfMeasure"}],
     search: '',
+    dialog: false,
   }),
   created(){
     resultsService.getAllResults().then((data) => {
@@ -96,7 +102,7 @@ export default {
       });
     },
     showLocationOnMap(){
-      //implement google maps dialog
+      this.dialog = true;
     }
   }
 };

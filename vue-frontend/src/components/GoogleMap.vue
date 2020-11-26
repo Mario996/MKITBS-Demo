@@ -1,61 +1,25 @@
 <template>
   <div>
     <gmap-map
-      :center="center"
-      :zoom="12"
-      style="width:100%;  height: 400px;"
+      :center="{ lat: 45.209, lng: 19.727 }"
+      :zoom="14"
+      style="width:500px;  height: 500px;"
     >
       <gmap-marker
-        :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        @click="center=m.position"
+        ref="myMarker"
+        :position="google && new google.maps.LatLng(45.209, 19.727)"
       ></gmap-marker>
     </gmap-map>
   </div>
 </template>
 
 <script>
+import {gmapApi} from 'vue2-google-maps'
+
 export default {
   name: "GoogleMap",
-  data() {
-    return {
-      center: { lat: 45.209, lng: 19.727 },
-      markers: [],
-      places: [],
-      currentPlace: null
-    };
-  },
-
-  mounted() {
-    this.geolocate();
-  },
-
-  methods: {
-    // receives a place object via the autocomplete component
-    setPlace(place) {
-      this.currentPlace = place;
-    },
-    addMarker() {
-      if (this.currentPlace) {
-        const marker = {
-          lat: this.currentPlace.geometry.location.lat(),
-          lng: this.currentPlace.geometry.location.lng()
-        };
-        this.markers.push({ position: marker });
-        this.places.push(this.currentPlace);
-        this.center = marker;
-        this.currentPlace = null;
-      }
-    },
-    geolocate: function() {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-      });
-    }
+  computed: {
+    google: gmapApi
   }
 };
 </script>
