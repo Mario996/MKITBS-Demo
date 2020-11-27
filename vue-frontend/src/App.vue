@@ -16,6 +16,8 @@
         height="50"
         width="150"
         class="my-auto"
+        :loading="loading"
+        :disabled="loading"
         @click="refreshItems()"
       >
         Refresh
@@ -49,6 +51,7 @@
               v-for="(item, index) in items"
               :key="index"
               @click="showLocationOnMap()"
+              style="cursor: pointer;"
             >
               <td>{{ item.Plant || item.pk.plant }}</td>
               <td>{{ item.PlantName }}</td>
@@ -89,6 +92,7 @@ export default {
      {text:"Material id", value:"MaterialId"}, {text:"Material name", value:"MaterialName"}, {text:"Quantity", value:"Quantity"}, {text:"Unit of measure", value:"UnitOfMeasure"}],
     search: '',
     dialog: false,
+    loading: false,
   }),
   created(){
     resultsService.getAllResults().then((data) => {
@@ -97,7 +101,9 @@ export default {
   },
   methods: {
     refreshItems() {
+      this.loading = true;
       resultsService.refreshResults().then((data) => {
+        this.loading = false;
         this.results = data.body.d.results;
       });
     },

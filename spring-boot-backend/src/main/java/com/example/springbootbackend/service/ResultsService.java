@@ -6,6 +6,7 @@ import com.example.springbootbackend.entity.Result;
 import com.example.springbootbackend.entity.ResultPrimaryKey;
 import com.example.springbootbackend.repository.ResultsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,22 @@ public class ResultsService {
     private  RestClient restClient;
     @Autowired
     private  ResultsRepository resultsRepository;
+    @Value("${app.odata.endpoint}")
+    private String odataEndpoint;
 
     public ResponseEntity<ResponseClass> refreshAllResults(){
-        ResponseEntity<ResponseClass> result = restClient.get("https://sapgw.mk-group.org:42080/sap/opu/odata/sap/ZGIS_SRV/StocksSet?$format=json");
-        if(saveAllResults(result.getBody()))
+        ResponseEntity<ResponseClass> result = restClient.get(odataEndpoint + "?$format=json");
+
+        if(result.getStatusCodeValue() == 200)
         {
-            return result;
+            if(saveAllResults(result.getBody()))
+            {
+                return result;
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(result.getStatusCode());
     }
 
     public ResponseClass getAllResultsFromDatabase(){

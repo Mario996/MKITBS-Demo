@@ -1,5 +1,6 @@
 package com.example.springbootbackend.controller;
 
+import com.example.springbootbackend.entity.ResponseClass;
 import com.example.springbootbackend.service.ResultsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class ResultsController {
 
     @GetMapping("/refresh")
     public ResponseEntity getAllResultsFromService(){
-        return new ResponseEntity<>(resultsService.refreshAllResults(), HttpStatus.OK);
+        ResponseEntity<ResponseClass> returnValue = resultsService.refreshAllResults();
+        return new ResponseEntity<>(returnValue, returnValue.getStatusCode());
     }
 
 }

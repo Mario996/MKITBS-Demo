@@ -5,6 +5,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -25,9 +26,12 @@ public class RestClient {
     public ResponseEntity<ResponseClass> get(String uri) {
         setBasicAuthorization();
         HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-        ResponseEntity<ResponseClass> responseEntity = rest.exchange(uri, HttpMethod.GET, requestEntity, ResponseClass.class);
-        this.setStatus(responseEntity.getStatusCode());
-        return responseEntity;
+        try {
+            return rest.exchange(uri, HttpMethod.GET, requestEntity, ResponseClass.class);
+        } catch(HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getRawStatusCode()).headers(e.getResponseHeaders())
+                    .body(new ResponseClass());
+        }
     }
 
     public void setBasicAuthorization() {
