@@ -16,8 +16,8 @@
         height="50"
         width="150"
         class="my-auto"
-        :loading="loading"
-        :disabled="loading"
+        :loading="loadingAll"
+        :disabled="loadingAll"
         @click="refreshItems()"
       >
         Refresh
@@ -26,22 +26,70 @@
     <v-card
       height="820">
       <v-card-title>
-        Stock status by location
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-row>
+          <v-col
+          cols="12"
+          md="3"
+          >
+            <p class="pt-4">
+              Stock status by location
+            </p>
+          </v-col>
+          <v-col
+          cols="12"
+          md="2"
+          >
+            <v-text-field
+              v-model="plant"
+              append-icon="mdi-magnify"
+              label="Plant"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col
+          cols="12"
+          md="3"
+          >
+            <v-text-field
+              v-model="storageLocation"
+              append-icon="mdi-magnify"
+              label="Storage location"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col
+          cols="12"
+          md="3"
+          >
+            <v-text-field
+              v-model="materialGroupId"
+              append-icon="mdi-magnify"
+              label="Material group id"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-btn
+            depressed
+            color="primary"
+            height="50"
+            width="150"
+            class="my-auto"
+            :loading="loadingFilter"
+            :disabled="loadingFilter"
+            @click="filterItems()"
+          >
+            Filter
+          </v-btn>
+        </v-row>
       </v-card-title>
     <v-data-table
       dense
       :headers="headers"
       :items="results"
       :items-per-page="30"
-      :search="search"
       class="elevation-1">
         <template
           v-slot:body="{ items }"
@@ -90,9 +138,12 @@ export default {
     headers: [{text:"Plant", value:"Plant"}, {text:"Plant name", value:"PlantName"}, {text:"Storage location", value:"StorageLocation"},
      {text:"Storage location name", value:"StorageLocationName"}, {text:"Material group id", value:"MaterialGroupId"},{text:"Material group name", value:"MaterialGroupName"},
      {text:"Material id", value:"MaterialId"}, {text:"Material name", value:"MaterialName"}, {text:"Quantity", value:"Quantity"}, {text:"Unit of measure", value:"UnitOfMeasure"}],
-    search: '',
+    plant: '',
+    storageLocation: '',
+    materialGroupId: '',
     dialog: false,
-    loading: false,
+    loadingAll: false,
+    loadingFilter: false,
   }),
   created(){
     resultsService.getAllResults().then((data) => {
@@ -101,11 +152,20 @@ export default {
   },
   methods: {
     refreshItems() {
-      this.loading = true;
+      this.loadingAll = true;
       resultsService.refreshResults().then((data) => {
-        this.loading = false;
+        this.loadingAll = false;
         this.results = data.body.d.results;
       });
+    },
+    filterItems() {
+      this.loadingFilter = true;
+      resultsService.filterAllResults(this.plant, this.storageLocation, this.materialGroupId).then((data) =>
+        {
+          this.loadingFilter = false;
+          this.results = data.body.d.results;
+        }
+      );
     },
     showLocationOnMap(){
       this.dialog = true;

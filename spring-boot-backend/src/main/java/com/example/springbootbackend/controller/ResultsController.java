@@ -5,10 +5,7 @@ import com.example.springbootbackend.service.ResultsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8082")
@@ -27,6 +24,12 @@ public class ResultsController {
     @GetMapping("/refresh")
     public ResponseEntity getAllResultsFromService(){
         ResponseEntity<ResponseClass> returnValue = resultsService.refreshAllResults();
+        return new ResponseEntity<>(returnValue, returnValue.getStatusCode());
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity filterAllResultsFromService(@RequestParam String filterValue){
+        ResponseEntity<ResponseClass> returnValue = resultsService.filterAllResults(filterValue);
         return new ResponseEntity<>(returnValue, returnValue.getStatusCode());
     }
 

@@ -39,6 +39,15 @@ public class ResultsService {
         return new ResponseEntity<>(result.getStatusCode());
     }
 
+    public ResponseEntity<ResponseClass> filterAllResults(String filterValue){
+        if(filterValue.length() > 0) {
+            filterValue = "&" + filterValue;
+        }
+        ResponseEntity<ResponseClass> result = restClient.get(odataEndpoint + "?$format=json" + filterValue);
+
+        return result;
+    }
+
     public ResponseClass getAllResultsFromDatabase(){
         List<Result> results = resultsRepository.findAll();
         return new ResponseClass(results);
